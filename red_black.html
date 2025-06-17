@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Advanced Counter</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@100;200;300;400;500;600;700;800;900&display=swap');
+        
+        .counter-container {
+            font-family: 'Inter', sans-serif;
+            background: linear-gradient(90deg, #DC2626 0%, #DC2626 50%, #1F2937 50%, #1F2937 100%);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        
+        .counter-container:hover {
+            transform: none;
+        }
+        
+        .counter-number {
+            font-weight: 800;
+            letter-spacing: -0.05em;
+            text-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+            animation: pulse-subtle 2s ease-in-out infinite;
+            font-size: 12rem;
+        }
+        
+        @keyframes pulse-subtle {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.02); }
+        }
+        
+        .press-enter {
+            opacity: 0.7;
+            font-size: 0.875rem;
+            font-weight: 500;
+            letter-spacing: 0.025em;
+            animation: fade-in-out 3s ease-in-out infinite;
+        }
+        
+        @keyframes fade-in-out {
+            0%, 100% { opacity: 0.4; }
+            50% { opacity: 0.8; }
+        }
+        
+        .increment-animation {
+            animation: increment-bounce 0.4s ease-out;
+        }
+        
+        @keyframes increment-bounce {
+            0% { transform: scale(1); }
+            30% { transform: scale(1.15); }
+            60% { transform: scale(0.95); }
+            100% { transform: scale(1); }
+        }
+        
+        .ripple-effect {
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .ripple {
+            position: absolute;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.3);
+            transform: scale(0);
+            animation: ripple-animation 0.6s linear;
+        }
+        
+        @keyframes ripple-animation {
+            to {
+                transform: scale(4);
+                opacity: 0;
+            }
+        }
+    </style>
+</head>
+<body class="min-h-screen">
+    <div 
+        id="counter" 
+        class="counter-container ripple-effect w-full h-screen flex items-center justify-center relative cursor-pointer select-none"
+        tabindex="0"
+    >
+        <div id="counterNumber" class="counter-number text-white">35</div>
+    </div></body>
+
+
+    <script>
+        let count = 35;
+        const counterElement = document.getElementById('counterNumber');
+        const containerElement = document.getElementById('counter');
+        
+        function incrementCounter() {
+            count++;
+            counterElement.textContent = count;
+            
+            // Add increment animation
+            counterElement.classList.add('increment-animation');
+            setTimeout(() => {
+                counterElement.classList.remove('increment-animation');
+            }, 400);
+            
+            // Create ripple effect
+            createRipple();
+        }
+        
+        function createRipple() {
+            const ripple = document.createElement('span');
+            ripple.classList.add('ripple');
+            
+            const rect = containerElement.getBoundingClientRect();
+            const size = Math.max(rect.width, rect.height);
+            const x = rect.width / 2 - size / 2;
+            const y = rect.height / 2 - size / 2;
+            
+            ripple.style.width = ripple.style.height = size + 'px';
+            ripple.style.left = x + 'px';
+            ripple.style.top = y + 'px';
+            
+            containerElement.appendChild(ripple);
+            
+            setTimeout(() => {
+                ripple.remove();
+            }, 600);
+        }
+        
+        // Event listeners
+        document.addEventListener('keydown', function(event) {
+            if (event.key === 'Enter') {
+                event.preventDefault();
+                incrementCounter();
+            }
+        });
+        
+        containerElement.addEventListener('click', function() {
+            incrementCounter();
+        });
+        
+        // Focus the counter container for better keyboard interaction
+        containerElement.focus();
+    </script>
+</body>
+</html>
